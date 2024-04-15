@@ -3,6 +3,7 @@ const testData = require("../db/data/test-data");
 const request = require("supertest");
 const app = require("../app.js");
 const db = require("../db/connection.js");
+const endpoints=require('../endpoints.json')
 
 
 beforeEach(() => seed(testData));
@@ -22,7 +23,18 @@ response.body.topics.forEach((topic) => {
 })
 })
 })
+})
 
-
-
+describe('API Endpoints', () => {
+    
+    test('GET /api should return all available endpoints', () => {
+      return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body}) => {
+            console.log(body)
+          expect(body).toEqual(endpoints);
+        });
+    })
+    
 })
