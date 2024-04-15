@@ -23,14 +23,6 @@ response.body.topics.forEach((topic) => {
 })
 })
 
-// test('GET:404 sends an appropriate status and error message when given a non-existant api', () => {
-//     return request(app)
-//       .get("/api/top")
-//       .expect(404)
-//       .then((response) => {
-        
-//         expect(response.body.msg).toBe('Api does not exist');
-//       });
-//   });
+
 
 })
