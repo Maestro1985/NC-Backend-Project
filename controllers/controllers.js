@@ -1,13 +1,11 @@
-const {selectTopics, selectArticleById}=require('../models/models')
+const {selectTopics, selectArticleById, selectArticles}=require('../models/models')
 
 
 exports.getTopics = (req, res, next) => {
 
-    const endpoint = req.path;
+   
     
-        
-    
-    selectTopics(endpoint).then((topics) => {
+      selectTopics().then((topics) => {
       res.status(200).send({ topics });
     })
 
@@ -29,4 +27,16 @@ exports.getTopics = (req, res, next) => {
         return next(err)
       })
     };
+
+    exports.getArticles= (req, res, next)=>{
+
+      selectArticles().then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch((err)=>{
+        
+        return next(err)
+      })
+
+    }
   

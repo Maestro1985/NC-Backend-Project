@@ -3,7 +3,8 @@ const testData = require("../db/data/test-data");
 const request = require("supertest");
 const app = require("../app.js");
 const db = require("../db/connection.js");
-const endpoints=require('../endpoints.json')
+const endpoints=require('../endpoints.json');
+// const articles = require("../db/data/test-data/articles.js");
 
 
 beforeEach(() => seed(testData));
@@ -14,9 +15,10 @@ describe('/api/topics',()=>{
 test('GET:200, responds with an array of all topics', ()=>{
 
 return request(app).get('/api/topics').expect(200).then((response)=>{
-
+  
+  
 expect(response.body.topics.length).toBe(3);
-
+ 
 response.body.topics.forEach((topic) => {
     expect(typeof topic.slug).toBe("string");
     expect(typeof topic.description).toBe("string");
@@ -87,9 +89,53 @@ test('GET:400 sends an appropriate status and error message when given an invali
       expect(response.body.msg).toBe('Bad request');
     });
 });
+});
 
+describe('/api/articles', ()=>{
 
+test('GET: 200, responds with an array of all articles', ()=>{
 
+  return request(app).get('/api/articles').expect(200).then((response)=>{
+
+      
+      expect(response.body.articles.length).toBe(13)
+      response.body.articles.forEach((article) => {
+      expect(typeof article.author).toBe("string");
+      expect(typeof article.title).toBe('string')
+      expect(typeof article.article_id).toBe('number')
+      expect(typeof article.topic).toBe('string')
+      expect(typeof article.created_at).toBe('string')
+      expect(typeof article.votes).toBe('number')
+      expect(typeof article.comment_count).toBe('string')
+    
+})
+})
 
 
 })
+})
+
+describe('api/articles', ()=>{
+
+  test('GET:404 sends an appropriate status and error message when given a non-existant api', () => {
+    return request(app)
+      .get("/api/ar")
+      .expect(404)
+      .then(response => {
+
+            
+        expect(response.body.msg).toBe('Api does not exist');
+      });
+  });
+})
+
+
+
+
+
+
+
+
+
+
+
