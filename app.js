@@ -9,7 +9,6 @@ app.use(express.json());
 
 
 app.get("/api/topics",getTopics);
-// app.get('/api/top', getTopics)
 app.get("/api",(req,res,next)=>{
     
     res.status(200).send(endPoints);
