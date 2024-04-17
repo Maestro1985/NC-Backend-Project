@@ -129,6 +129,68 @@ describe('api/articles', ()=>{
   });
 })
 
+describe('/api/articles/:article_id/comments', ()=>{
+
+  test('GET: 200, responds with an array of comments for given article id',()=>{
+
+    return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then((response) => {
+            
+            expect(response.body.comments.length).toBe(11)
+            response.body.comments.forEach((comment) => {
+            expect(typeof comment.comment_id).toBe("number");
+            expect(typeof comment.votes).toBe('number')
+            expect(typeof comment.created_at).toBe('string')
+            expect(typeof comment.author).toBe('string')
+            expect(typeof comment.body).toBe('string')
+            expect(typeof comment.article_id).toBe('number')
+        
+
+})
+  })
+
+  })
+
+  test('GET:404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+    return request(app)
+      .get('/api/articles/10000/comments')
+      .expect(404)
+      .then((response) => {
+       expect(response.body.msg).toBe('Article id does not exist');
+      });
+  });
+
+  test('GET: 200, responds with an empty array if article id exists but has no comments', ()=>{
+
+
+    return request(app)
+    .get('/api/articles/2/comments')
+    .expect(200)
+    .then((response)=>{
+      
+      expect(response.body.comments).toHaveLength(0)
+      
+      
+    })
+
+   
+  })
+  
+  test('GET:400 sends an appropriate status and error message when given an invalid id', () => {
+    return request(app)
+      .get('/api/articles/not-a-team/comments')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad request');
+      });
+  });
+
+
+
+
+})
 
 
 
