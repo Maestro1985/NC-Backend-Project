@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleById, selectArticles, selectArticleWithComments, checkArticleExists}=require('../models/models')
+const {selectTopics, selectArticleById, selectArticles, selectArticleWithComments, checkArticleExists, insertComment}=require('../models/models')
 
 
 exports.getTopics = (req, res, next) => {
@@ -45,9 +45,7 @@ exports.getTopics = (req, res, next) => {
     
  Promise.all([selectArticleWithComments(article_id), checkArticleExists(article_id)]).then(([comments])=>{
 
-  
-
-          res.status(200).send({comments})
+  res.status(200).send({comments})
         })
 
         .catch((err)=>{
@@ -55,6 +53,24 @@ exports.getTopics = (req, res, next) => {
           return next (err)
         })
 }
+
+exports.getComment = (req, res, next) => {
+  const {article_id}=req.params
+  
+  const newComment= req.body;
+  
+  
+  insertComment(article_id,newComment).then((comment) => {
+    res.status(201).send({ comment });
+  })
+  // You might need some error handling here
+  
+
+  .catch((err)=>{
+    
+    return next(err)
+  })
+};
 
 
   
