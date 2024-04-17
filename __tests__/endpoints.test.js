@@ -187,10 +187,48 @@ describe('/api/articles/:article_id/comments', ()=>{
       });
   });
 
+})
+
+describe('/api/articles/:article_id/comments', ()=>{
+
+test('POST:201, adds a new comment for an article id',()=>{
+
+  const newComment = {
+    username:'butter_bridge',
+    body:'Lorem Ipsum Habemus'
+  };
+  return request(app)
+    .post('/api/articles/2/comments')
+    .send(newComment)
+    .expect(201)
+    .then((response) => {
+      
+      expect(response.body.comment.article_id).toBe(2);
+      expect(response.body.comment.author).toBe('butter_bridge');
+      expect(response.body.comment.body).toBe('Lorem Ipsum Habemus');
+    });
 
 
 
 })
+
+
+test('POST:400 responds with an appropriate status and error message when provided with a comment missing required fields ', () => {
+  return request(app)
+    .post('/api/articles/2/comments')
+    .send({
+      author: 1982
+    })
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe('Bad request');
+    });
+});
+});
+
+
+
+
 
 
 
