@@ -69,18 +69,33 @@ exports.checkArticleExists=(article_id)=>{
   })
   }
 
-  exports.insertComment = (article_id, { username, body}) => {
-   
+  exports.insertComment = (article_id, username, body) => {
+    
       return db
       .query(
-        'INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;',
+        'INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *',
         [article_id, username, body]
       )
       .then(({rows}) => {
-        
-        
-      return rows[0];
+       
+        return rows[0];
       })
         }
+
+      exports.updateVotes=(article_id, inc_votes)=>{
+      
+        
+        return db.query(`UPDATE articles SET votes = votes + ${inc_votes} WHERE article_id=$1 RETURNING *`, [article_id]).then(({rows})=>{
+            
+          if(rows.length===0){
+
+            return Promise.reject({status:404, msg:'Article id does not exist'})
+    }
+
+          
+          return rows[0]
+        })
+        
+      }
         
       
