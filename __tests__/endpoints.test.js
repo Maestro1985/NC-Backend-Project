@@ -448,9 +448,42 @@ test('DELETE:400 responds with an appropriate status and error message when give
     });
 });
 
-
-
 })
+
+describe('GET /api/users',()=>{
+
+test('GET:200, responds with an array of all users', ()=>{
+
+  return request(app).get('/api/users').expect(200).then(({body})=>{
+    
+    
+    
+  expect(body.users.length).toBe(4);
+   
+      body.users.forEach((user) => {
+      expect(typeof user.username).toBe("string");
+      expect(typeof user.name).toBe("string");
+      expect(typeof user.avatar_url).toBe('string')
+  })
+  })
+})
+
+test('GET:404 sends an appropriate status and error message when given a non-existant api', () => {
+    return request(app)
+      .get("/api/userssss")
+      .expect(404)
+      .then(({body})=> {
+
+            
+        expect(body.msg).toBe('Api does not exist');
+      });
+  });
+})
+  
+
+
+
+
 
 
 
