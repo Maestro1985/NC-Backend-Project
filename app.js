@@ -61,14 +61,16 @@ app.use((err, req, res, next) => {
     res.status(404).send({msg:`Not found`});
       } 
      
-
-
       next(err)
-
-   
-    })
+})
  
-
+app.use((err, req, res, next) => {
+  
+  if(err.code==='42601'){
+    res.status(400).send({msg:`Bad request`})
+  }
+  next(err)
+})
   
 
   app.all('*', (req, res, next) => {

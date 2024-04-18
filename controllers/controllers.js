@@ -84,7 +84,7 @@ updateVotes(article_id, inc_votes).then((articles)=>{
 })
 
 .catch((err)=>{
-
+  console.log(err)
   return next(err)
 })
 

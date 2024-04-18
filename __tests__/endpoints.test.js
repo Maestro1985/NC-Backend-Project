@@ -404,7 +404,27 @@ test('PATCH:400 sends an appropriate status and error message when updating a no
     });
 });
 
+test('PATCH:400 sends an appropriate status and error message when passing a value which isnt a number', () => {
+
+  const newVotes={
+
+    inc_votes:'not a number'
+
+  }
+  return request(app)
+    .patch('/api/articles/2')
+    .send(newVotes)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('Bad request');
+    });
+});
+
+
 })
+
+
+
 
 
 
