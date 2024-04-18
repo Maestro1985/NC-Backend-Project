@@ -212,6 +212,30 @@ test('POST:201, adds a new comment for an article id',()=>{
 
 })
 
+test('POST:201, adds a new comment for an article id even though there is unnecessary prop added to the object',()=>{
+
+  const newComment = {
+    username:'icellusedkars',
+    body:'Lorem Ipsum Habemus',
+    isHappy:true
+  };
+  return request(app)
+    .post('/api/articles/2/comments')
+    .send(newComment)
+    .expect(201)
+    .then(({body}) => {
+      const{comment}=body
+      expect(comment.article_id).toBe(2);
+      expect(comment.author).toBe('icellusedkars');
+      expect(comment.body).toBe('Lorem Ipsum Habemus');
+      
+    });
+
+
+
+})
+
+
 
 test('POST:400 responds with an appropriate status and error message when provided with a comment missing required fields ', () => {
   return request(app)
@@ -224,8 +248,163 @@ test('POST:400 responds with an appropriate status and error message when provid
       expect(response.body.msg).toBe('Bad request');
     });
 });
+
+test('POST:400, responds with an appropriate status and error message when given a non existant id',()=>{
+
+  const newComment = {
+    username:'icellusedkars',
+    body:'Lorem Ipsum Habemus',
+    isHappy:true
+  };
+  return request(app)
+    .post('/api/articles/hello/comments')
+    .send(newComment)
+    .expect(400)
+    .then(({body}) => {
+     expect(body.msg).toBe('Bad request');
+    });
+      
+    });
+
+    test('POST:404, responds with an appropriate status and error message when given a valid but non existant id',()=>{
+
+      const newComment = {
+        username:'icellusedkars',
+        body:'Lorem Ipsum Habemus',
+      
+      };
+      return request(app)
+        .post('/api/articles/100/comments')
+        .send(newComment)
+        .expect(404)
+        .then(({body}) => {
+          
+         expect(body.msg).toBe('Not found');
+        });
+          
+        });
+
+test('POST:404, responds with an appropriate status and error message when given an invalid username',()=>{
+
+  const newComment = {
+  username:'Uncle Buck',
+  body:'Lorem Ipsum Habemus',
+          
+  };
+  return request(app)
+  .post('/api/articles/3/comments')
+  .send(newComment)
+  .expect(404)
+  .then(({body}) => {
+        
+    expect(body.msg).toBe('Not found');
+  
+  });
+              
+    });
+    
+
+})
+
+
+
+describe('/api/articles/:article_id', ()=>{
+
+test('PATCH:200, updates votes property of an article id',()=>{
+
+
+  const newVotes={
+
+    inc_votes:25
+
+  }
+  return request(app)
+  .patch('/api/articles/1')
+  .send(newVotes)
+  .expect(200)
+  .then(({body})=>{
+    
+    expect(body.article_id).toBe(1)
+    expect(body.votes).toBe(125)
+
+  
+  })
+  })
+
+test(`PATCH:200, updates vote property of article id which has 0 votes`, ()=>{
+
+
+  const newVotes={
+
+    inc_votes:100
+
+  }
+  return request(app)
+  .patch('/api/articles/2')
+  .send(newVotes)
+  .expect(200)
+  .then(({body})=>{
+    
+    expect(body.article_id).toBe(2)
+    expect(body.votes).toBe(100)
+
+  
+  })
+})
+
+test('PATCH:200, updates votes property of article with a negative number', ()=>{
+
+  const newVotes={
+
+    inc_votes:-90
+
+  }
+  return request(app)
+  .patch('/api/articles/3')
+  .send(newVotes)
+  .expect(200)
+  .then(({body})=>{
+    
+    expect(body.article_id).toBe(3)
+    expect(body.votes).toBe(-90)
+
+  
+  })
+})
+
+test('PATCH:404 sends an appropriate status and error message when updating a valid but non-existent id', () => {
+
+  const newVotes={
+
+    inc_votes:25
+
+  }
+  return request(app)
+    .patch('/api/articles/100')
+    .send(newVotes)
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('Article id does not exist');
+    });
 });
 
+test('PATCH:400 sends an appropriate status and error message when updating a non-existent id', () => {
+
+  const newVotes={
+
+    inc_votes:25
+
+  }
+  return request(app)
+    .patch('/api/articles/article-one')
+    .send(newVotes)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe('Bad request');
+    });
+});
+
+})
 
 
 

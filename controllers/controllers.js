@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleById, selectArticles, selectArticleWithComments, checkArticleExists, insertComment}=require('../models/models')
+const {selectTopics, selectArticleById, selectArticles, selectArticleWithComments, checkArticleExists, insertComment,updateVotes}=require('../models/models')
 
 
 exports.getTopics = (req, res, next) => {
@@ -10,7 +10,7 @@ exports.getTopics = (req, res, next) => {
     })
 
     .catch((err) => {
-        
+      
        return next(err);
       });
   };
@@ -57,20 +57,39 @@ exports.getTopics = (req, res, next) => {
 exports.getComment = (req, res, next) => {
   const {article_id}=req.params
   
-  const newComment= req.body;
+  const {username, body}= req.body;
   
   
-  insertComment(article_id,newComment).then((comment) => {
-    res.status(201).send({ comment });
+insertComment(article_id,username, body).then((comment)=> {
+    res.status(201).send({comment});
   })
-  // You might need some error handling here
+ 
   
 
   .catch((err)=>{
-    
+  
     return next(err)
   })
 };
+
+exports.getVotes=(req, res, next)=>{
+
+const{article_id}=req.params
+
+const {inc_votes}=req.body
+
+updateVotes(article_id, inc_votes).then((articles)=>{
+
+  res.status(200).send(articles)
+})
+
+.catch((err)=>{
+
+  return next(err)
+})
+
+
+}
 
 
   
