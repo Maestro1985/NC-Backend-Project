@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleById, selectArticles, selectArticleWithComments, checkArticleExists, insertComment,updateVotes, removeCommentById}=require('../models/models')
+const {selectTopics, selectArticleById, selectArticles, selectArticleWithComments, checkArticleExists, insertComment,updateVotes, removeCommentById,selectUsers}=require('../models/models')
 
 
 exports.getTopics = (req, res, next) => {
@@ -101,5 +101,18 @@ exports.deleteCommentById = (req, res, next) => {
   })
 };
 
+exports.getUsers = (req, res, next) => {
+
+   
+    
+  selectUsers().then((users) => {
+  res.status(200).send({ users });
+})
+
+.catch((err) => {
+  
+   return next(err);
+  });
+};
 
   

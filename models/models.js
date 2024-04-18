@@ -111,5 +111,13 @@ return rows[0];
           return 
       })
     }
-        
+    
+    exports.selectUsers = () => {
+
+    return db.query('SELECT * FROM users').then(({rows}) => {
+          
+      
+            return rows
+      });
+    };
       
