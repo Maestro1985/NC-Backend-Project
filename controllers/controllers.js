@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleById, selectArticles, selectArticleWithComments, checkArticleExists, insertComment,updateVotes, removeCommentById,selectUsers}=require('../models/models')
+const {selectTopics, selectArticleById, selectArticles, selectArticleWithComments, checkArticleExists, insertComment,updateVotes, removeCommentById,selectUsers,checkTopicExists}=require('../models/models')
 
 
 exports.getTopics = (req, res, next) => {
@@ -29,16 +29,22 @@ exports.getTopics = (req, res, next) => {
     };
 
     exports.getArticles= (req, res, next)=>{
+    
+      const {topic}=req.query
 
-      selectArticles().then((articles) => {
-        res.status(200).send({ articles });
+      selectArticles(topic).then((articles) => {
+        res.status(200).send({articles}) 
       })
+    
+
       .catch((err)=>{
         
         return next(err)
       })
-
     }
+  
+  
+    
     exports.getArticleWithComments=(req, res, next)=>{
   
       const { article_id } = req.params;

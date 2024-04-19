@@ -4,7 +4,8 @@ const request = require("supertest");
 const app = require("../app.js");
 const db = require("../db/connection.js");
 const endpoints=require('../endpoints.json');
-// const articles = require("../db/data/test-data/articles.js");
+
+require('jest-sorted')
 
 
 beforeEach(() => seed(testData));
@@ -113,6 +114,39 @@ test('GET: 200, responds with an array of all articles', ()=>{
 
 
 })
+
+test("GET: 200 respond with array of articles with a specific topics value", () => {
+
+    
+  return request(app)
+  
+    .get("/api/articles?topic=mitch")
+    .expect(200)
+    .then(({ body }) => {
+     const { articles } = body;
+     
+      expect(articles.length).toBe(12)
+      articles.forEach(article => {
+      expect(article.topic).toBe('mitch');
+      });
+      
+    });
+});
+
+test('GET:404, responds with correct status and error message when passed an invalid topic value which doesnt exist in the database', ()=>{
+
+    return request(app)
+    .get('/api/articles?topic=fantastic')
+    .expect(404)
+    .then(({body})=>{
+      
+      expect(body.msg).toBe('Topic does not exist')
+
+    })
+
+
+})
+
 })
 
 describe('api/articles', ()=>{
@@ -187,6 +221,30 @@ describe('/api/articles/:article_id/comments', ()=>{
       });
   });
 
+  test("GET: 200 respond with array of all articles if query is omitted", () => {
+
+    
+    return request(app)
+    
+      .get("/api/articles?")
+      .expect(200)
+      .then(({ body }) => {
+       const { articles } = body;
+      expect(articles.length).toBe(13)
+      
+      articles.forEach((article) => {
+      expect(typeof article.author).toBe("string");
+      expect(typeof article.title).toBe('string')
+      expect(typeof article.article_id).toBe('number')
+      expect(typeof article.topic).toBe('string')
+      expect(typeof article.created_at).toBe('string')
+      expect(typeof article.votes).toBe('number')
+      expect(typeof article.comment_count).toBe('string')
+        
+      });
+  });
+
+})
 })
 
 describe('/api/articles/:article_id/comments', ()=>{
@@ -478,7 +536,10 @@ test('GET:404 sends an appropriate status and error message when given a non-exi
         expect(body.msg).toBe('Api does not exist');
       });
   });
-})
+
+
+  
+ })
   
 
 
