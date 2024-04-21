@@ -53,6 +53,54 @@ describe('API Endpoints', () => {
     
 })
 
+describe('/api/articles/:article_id/comments_count',()=>{
+
+  test('GET:200, adds a property of comments count to article id with a value of total number of comments for article',()=>{
+
+      return request(app)
+      .get('/api/articles/1/')
+      .expect(200)
+      .then(({body})=>{
+    
+        expect(body.article.author).toBe("butter_bridge")
+        expect(body.article.title).toBe("Living in the shadow of a great man")
+        expect(body.article.article_id).toBe(1);
+        expect(body.article.body).toBe("I find this existence challenging")
+        expect(body.article.topic).toBe('mitch')
+        expect(typeof body.article.created_at).toBe('string')
+        expect(body.article.votes).toBe(100)
+        expect(body.article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700")
+        expect(body.article.comment_count).toBe('11')
+        
+
+      })
+  })
+
+ test('GET:200, responds with an  total comment count of 0', ()=>{
+
+  return request(app)
+  .get('/api/articles/2/')
+  .expect(200)
+  .then(({body})=>{
+    const{article}=body
+
+    expect(article.author).toBe('icellusedkars')
+    expect(article.title).toBe('Sony Vaio; or, The Laptop')
+    expect(article.topic).toBe('mitch')
+    expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",)
+    expect(article.body).toBe('Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.')
+    expect(typeof article.created_at).toBe('string')
+    expect(article.comment_count).toBe('0')
+
+
+
+  })
+
+
+ }) 
+
+})
+
 describe('/api/articles/:article_id endpoint', ()=>{
 
 
@@ -96,17 +144,19 @@ describe('/api/articles', ()=>{
 
 test('GET: 200, responds with an array of all articles', ()=>{
 
-  return request(app).get('/api/articles').expect(200).then((response)=>{
+  return request(app).get('/api/articles').expect(200).then(({body})=>{
 
-      
-      expect(response.body.articles.length).toBe(13)
-      response.body.articles.forEach((article) => {
+      const{articles}=body
+      expect(articles.length).toBe(13)
+      articles.forEach((article) => {
+        
       expect(typeof article.author).toBe("string");
       expect(typeof article.title).toBe('string')
       expect(typeof article.article_id).toBe('number')
       expect(typeof article.topic).toBe('string')
       expect(typeof article.created_at).toBe('string')
       expect(typeof article.votes).toBe('number')
+      expect(typeof article.article_img_url).toBe("string");
       expect(typeof article.comment_count).toBe('string')
     
 })
@@ -132,6 +182,16 @@ test("GET: 200 respond with array of articles with a specific topics value", () 
       
     });
 });
+
+test('GET:200, responds with an empty array if topic is valid but has no asscoiated articles', ()=>{
+
+  return request(app)
+  .get('/api/articles?topic=paper')
+  .expect(200)
+  .then(({body})=>{
+  expect(body.length).toBe()
+  })
+})
 
 test('GET:404, responds with correct status and error message when passed an invalid topic value which doesnt exist in the database', ()=>{
 
@@ -186,6 +246,7 @@ describe('/api/articles/:article_id/comments', ()=>{
   })
 
   })
+  
 
   test('GET:404 sends an appropriate status and error message when given a valid but non-existent id', () => {
     return request(app)
