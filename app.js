@@ -3,6 +3,9 @@ const{getTopics, getArticleById, getArticles, getArticleWithComments, getComment
 const endPoints=require('./endpoints.json')
 const app = express();
 app.use(express.json());
+const cors = require('cors');
+
+app.use(cors());
 
 
 
